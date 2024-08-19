@@ -1,0 +1,25 @@
+{
+  "name": "notpos_kr",
+  "version": "1.0.0",
+  "description": "simple korean POS tagger",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NOT2ho/notPOS_kr.git"
+  },
+  "keywords": [
+    "nlp",
+    "korean",
+    "POS"
+  ],
+  "author": "not2ho",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NOT2ho/simplePOS_kr/issues"
+  },
+  "homepage": "https://github.com/NOT2ho/simplePOS_kr#readme",
+  "type": "module"
+}
