@@ -125,7 +125,6 @@ class Pos {
             }
             res = ac.search(text)
                 
-                 let resi = ''
             let result = []
 
                 for (let i in res) {
@@ -139,9 +138,19 @@ class Pos {
             
                 result.push(res[res.length - 1])
                
-                console.log(result)
-                return result
-            
+            let ret = []
+            ret.push(result[0][1])
+            for (let i = 0; i < result.length - 1; i++) {
+                
+             //   console.log(result[i+1][1][0] + ' ' + result[i][1][0][result[i][1][0].length-1] + (result[i][1][0][result[i][1][0].length-1] != result[i + 1][1][0][0])+ result[i + 1][1][0][0])
+                if (result[i][1][0][result[i][1][0].length - 1] != result[i + 1][1][0][0]) {
+                    ret.push(result[i + 1][1])
+                    console.log(true)
+                }
+                
+
+            }
+            console.log(ret)
         }
         
         catch (err) {
