@@ -36,38 +36,38 @@ class AhoCorasick {
         for (const i in this.root.child) {
             this.root.child[i].fail = this.root;
             que.push(this.root.child[i]);
-        }
-        while (que.length > 0) {
-            const currentNode = que.shift();
+        
+            while (que.length > 0) {
+                const currentNode = que.shift();
             
-            for (const i in currentNode.child) {
-                const nextNode = currentNode.child[i]
+                for (const i in currentNode.child) {
+                    const nextNode = currentNode.child[i]
 
-                if (nextNode == null)
-                    continue
+                    if (nextNode == null)
+                        continue
                 
-                que.push(nextNode);
+                    que.push(nextNode);
 
-                let failNode = currentNode.fail;
+                    let failNode = currentNode.fail;
 
-                while (failNode !== null && !failNode.child[i]) {
-                    failNode = failNode.fail;
-                }
+                    while (failNode !== null && !failNode.child[i]) {
+                        failNode = failNode.fail;
+                    }
                 
-                if (currentNode != this.root) 
+                    if (currentNode != this.root)
 
                 
-                    nextNode.fail = failNode ? failNode.child[i] || this.root : this.root;
+                        nextNode.fail = failNode ? failNode.child[i] || this.root : this.root;
                     nextNode.output = nextNode.output.concat(nextNode.fail.output);
                 
-            }
-        }
+                }
         
-    }
+        
+            }}
 
-
+        }
     search(input) {
-    this.fail()
+        this.fail()
         let text = input
         let result = []
         let currentNode = this.root;
@@ -113,19 +113,21 @@ class Pos {
        
         const ac = new AhoCorasick()
         let res = []
-            try {
-                const data = fs.readFileSync('./dic/dic__.csv')
-                let pd = csvRead(data)
+        try {
+            const data = fs.readFileSync('./dic/dic__.csv')
+            let pd = csvRead(data)
 
             for (let i in pd) {
-                        let word = pd[i].slice(0, -1).split(',')
-                    //    let tag = pd[i].split(',')[1].slice(0, -2)
+                let word = pd[i].slice(0, -1).split(',')
+                //    let tag = pd[i].split(',')[1].slice(0, -2)
                 
                 ac.insert(word)
-                }
-                res = ac.search(text)
+            }
+            res = ac.search(text)
                 
-                let result = []
+                 let resi = ''
+            let result = []
+
                 for (let i in res) {
                     if (res[i == 0 ? 1 :i-1][1]!= '')
                         //console.log(res[i][0])
@@ -133,23 +135,26 @@ class Pos {
                             result.push(res[i-1])
                         }
                 }
-                result.push(res[res.length-1])
+
+            
+                result.push(res[res.length - 1])
                
-            console.log(result)
-               return result
-            }
-        
-            catch (err) {
-                console.error(err)
-            }
+                console.log(result)
+                return result
+            
         }
- }
+        
+        catch (err) {
+            console.error(err)
+        }
+    }
+ 
 
-
+}
 
 const csvRead = (csv) => {
         let csvs = csv.toString().split('\n')
         return csvs
 }
 const pos = new Pos()
-pos.tag('새빨간 액체에 잠겨 너를 사랑했다는 사실들도 모두 녹아 버렸던 걸까 붉은 수평선 너머로 웃어 봐')
+pos.tag('새로운 감정 생성 눈물이 흘러도 피가 나도 어쩔 수 없잖아')
