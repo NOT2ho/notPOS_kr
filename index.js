@@ -13,27 +13,26 @@ const pos = (text) => {
 	let regex = /nothing/
     
     const csvRead = (csv) => {
-        let csvs = csv.toString().split('\n')
+        let csvs = csv.toString().trim().split('\n')
         return csvs
     }
     const ifN = () => {
         try {
             const data = fs.readFileSync('./dic/dic__.csv')
             let pd = csvRead(data)
+                .map(x => ({
+                    word: x.split(',')[0],
+                    tag: x.split(',')[1].slice(0, -2),
+                }))
             for (let j in arr) {
-                for (let i in pd) {
-                    
-                    word = pd[i].split(',')[0]
-                    tag = pd[i].split(',')[1].slice(0, -2)
-                    regex = new RegExp(`^(${word})`);
-               
-                    if (regex.test(arr[j]) === true) {
+                for (const { word, tag } of pd) {
+                    if (arr[j].startsWith(word)=== true) {
                         res.push([word, tag])
                         console.log("true")
                         if (word.length != arr[j].length)
                             res.push([arr[j].slice(word.length, arr[j].length), 'J|X'])
                         pd = pd.splice(1, pd.length)
-                                   
+                        break
                     }
 
                 } 
