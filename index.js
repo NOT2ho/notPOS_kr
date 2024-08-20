@@ -6,6 +6,7 @@ constructor() {
     this.child = {};
     this.output = []
     this.fail = null
+    this.end = false
 }
 
 }
@@ -26,6 +27,7 @@ class AhoCorasick {
             node = node.child[char];
         }
         node.output.push(output);
+        node.end = true
     }
 
 
@@ -39,7 +41,12 @@ class AhoCorasick {
             const currentNode = que.shift();
             
             for (const i in currentNode.child) {
-                que.push(currentNode.child[i]);
+                const nextNode = currentNode.child[i]
+
+                if (nextNode == null)
+                    continue
+                
+                que.push(nextNode);
 
                 let failNode = currentNode.fail;
 
@@ -47,44 +54,44 @@ class AhoCorasick {
                     failNode = failNode.fail;
                 }
                 
-                if (currentNode == this.root) {
+                if (currentNode != this.root) 
 
-                }
-                currentNode.child[i].fail = failNode ? failNode.child[i] || this.root : this.root;
-                currentNode.child[i].output = currentNode.child[i].output.concat(currentNode.child[i].fail.output);
-                //console.log(currentNode.output)
+                
+                    nextNode.fail = failNode ? failNode.child[i] || this.root : this.root;
+                    nextNode.output = nextNode.output.concat(nextNode.fail.output);
+                
             }
-            //      console.log(currentNode.output)
         }
         
     }
 
 
-    search(input, cb) {
+    search(input) {
+    this.fail()
         let text = input
+        let result = []
         let currentNode = this.root;
         for (let i in text) {
             
             const char = text[i];
-    
-            while (currentNode !== null && !currentNode.child[char])
+            while (currentNode !== null && !currentNode.child[char]) {
+              //   console.log(currentNode , currentNode.child[char])
                 currentNode = currentNode.fail;
-        
+            }
     
             currentNode = currentNode ? currentNode.child[char] || this.root : this.root;
-                      
+       //    
         
             for (const output of currentNode.output) {
-                cb(i - output[0].length + 1, output);
-             
-             //   console.log(i,output)
+                result.push([i - output[0].length + 1, output])
+      //       console.log([i - output[0].length + 1, output])
                   
                 
             }
             
         }
                 
-            
+            return result
         
         
     }
@@ -116,37 +123,19 @@ class Pos {
                 
                 ac.insert(word)
                 }
-
-
-               /* const rec = (input) => {
-                    if (idx > input.length) {
-                        return 0
-                    }
-                    return rec(input.slice(
-                        ac.search(input, (index, output) => {
-                        res.push([index, output])
-                            idx = idx + index
-                       // console.log(idx, output)
-                        })
-                    ))
-                    }*/
+                res = ac.search(text)
                 
-                //    rec(text)
-                ac.search(text, (idx, output) => {
-                    res.push([idx, output])
-                })
                 let result = []
                 for (let i in res) {
                     if (res[i == 0 ? 1 :i-1][1]!= '')
                         //console.log(res[i][0])
-                    if (res[i == 0 ? 1 : i - 1][0]!= res[i][0]) {
-                       
-                        result.push(res[i-1])
-                    }
+                        if (res[i == 0 ? 1 : i - 1][0]!= res[i][0]) {
+                            result.push(res[i-1])
+                        }
                 }
                 result.push(res[res.length-1])
                
-               console.log(result)
+            console.log(result)
                return result
             }
         
@@ -163,4 +152,4 @@ const csvRead = (csv) => {
         return csvs
 }
 const pos = new Pos()
-pos.tag('징그러운 짐승은 너무 징그럽고 징그럽기 때문에 징그럽다 그러므로 고양이이다 야옹')
+pos.tag('새빨간 액체에 잠겨 너를 사랑했다는 사실들도 모두 녹아 버렸던 걸까 붉은 수평선 너머로 웃어 봐')
