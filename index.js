@@ -15,8 +15,9 @@ class AhoCorasick {
         this.root = new Node();
     }
 
-    insert(word) {
-        let output = word
+    insert(words) {
+        let output = words
+        let word = words[0]
         let node = this.root;
         for (let i in word) {
             const char = word[i];
@@ -51,7 +52,6 @@ class AhoCorasick {
                 }
                 currentNode.child[i].fail = failNode ? failNode.child[i] || this.root : this.root;
                 currentNode.child[i].output = currentNode.child[i].output.concat(currentNode.child[i].fail.output);
-                
                 //console.log(currentNode.output)
             }
             //      console.log(currentNode.output)
@@ -75,15 +75,9 @@ class AhoCorasick {
                       
         
             for (const output of currentNode.output) {
-                cb(i - output.length + 1, output);
-                /*         if (result[result.length === undefined ? 0 : result.length - 1][0] != output[0]) { //앞글자 다를 때
-                             console.log(result[result.length === undefined ? 0 : result.length - 1][0], output[0])
-                             if ((result[result.length === undefined ? 0 : result.length - 1] != output)) { //글자 수 다를 때
-                                 if ((result[result.length - 1].length != output.length)) {
-                                     console.log('res: ' + result[result.length - 1], ' out: ' + output)
-                                     result.push(output)
-           */
-                        
+                cb(i - output[0].length + 1, output);
+             
+             //   console.log(i,output)
                   
                 
             }
@@ -94,9 +88,6 @@ class AhoCorasick {
         
         
     }
-    //console(res.length)
-        
-    // console.log(idx)
         
     
 }
@@ -120,7 +111,7 @@ class Pos {
                 let pd = csvRead(data)
 
             for (let i in pd) {
-                        let word = pd[i].split(',')[0]
+                        let word = pd[i].slice(0, -1).split(',')
                     //    let tag = pd[i].split(',')[1].slice(0, -2)
                 
                 ac.insert(word)
@@ -141,23 +132,22 @@ class Pos {
                     }*/
                 
                 //    rec(text)
-                ac.search(text, (index, output) => {
-                    res.push([index, output])
+                ac.search(text, (idx, output) => {
+                    res.push([idx, output])
                 })
-              //  console.log(res)
                 let result = []
-             result.push(res[0])
                 for (let i in res) {
-                    if (res[i][0] != '')
-                    if (res[i == 0 ? 1 : i - 1][0] != res[i][0]) {
+                    if (res[i == 0 ? 1 :i-1][1]!= '')
+                        //console.log(res[i][0])
+                    if (res[i == 0 ? 1 : i - 1][0]!= res[i][0]) {
                        
-                        result.push(res[i - 1])
+                        result.push(res[i-1])
                     }
                 }
                 result.push(res[res.length-1])
                
-                console.log(result)
-                return result
+               console.log(result)
+               return result
             }
         
             catch (err) {
@@ -173,4 +163,4 @@ const csvRead = (csv) => {
         return csvs
 }
 const pos = new Pos()
-pos.tag('징그러운짐승')
+pos.tag('징그러운 짐승은 너무 징그럽고 징그럽기 때문에 징그럽다 그러므로 고양이이다 야옹')
