@@ -69,7 +69,7 @@ class AhoCorasick {
     search(input) {
         this.fail()
         let text = input
-        let result = []
+        let result = {}
         let currentNode = this.root;
         for (let i in text) {
             
@@ -83,8 +83,10 @@ class AhoCorasick {
        //    
         
             for (const output of currentNode.output) {
-                result.push([i - output[0].length + 1, output])
-      //       console.log([i - output[0].length + 1, output])
+                
+                    result[i - output[0].length + 1] =[]
+             result[i - output[0].length + 1].push(output)
+      
                   
                 
             }
@@ -112,7 +114,7 @@ class Pos {
     tag = (text) => {
        
         const ac = new AhoCorasick()
-        let res = []
+        let res = {}
         try {
             const data = fs.readFileSync('./dic/dic__.csv')
             let pd = csvRead(data)
@@ -124,33 +126,37 @@ class Pos {
                 ac.insert(word)
             }
             res = ac.search(text)
-                
-            let result = []
-
-                for (let i in res) {
-                    if (res[i == 0 ? 1 :i-1][1]!= '')
-                        //console.log(res[i][0])
-                        if (res[i == 0 ? 1 : i - 1][0]!= res[i][0]) {
-                            result.push(res[i-1])
-                        }
-                }
-
+            let result = {}
+            let idx = 0
+            for (let i of Object.keys(res)) 
+                        result[i].push(res[i][res[i].length-1])
+                    
             
-                result.push(res[res.length - 1])
-               
+
+           console.log(result)
+            result.push(res[res.length - 1])
             let ret = []
+            const set = new Set()
             ret.push(result[0][1])
-            for (let i = 0; i < result.length - 1; i++) {
-                
-             //   console.log(result[i+1][1][0] + ' ' + result[i][1][0][result[i][1][0].length-1] + (result[i][1][0][result[i][1][0].length-1] != result[i + 1][1][0][0])+ result[i + 1][1][0][0])
+            for (let i = 0; i < result.length - 2; i++) {
+                //    console.log(result[i + 1][1][0], result[i + 2][1][0])
                 if (result[i][1][0][result[i][1][0].length - 1] != result[i + 1][1][0][0]) {
-                    ret.push(result[i + 1][1])
-                    console.log(true)
-                }
+                    //   console.log(result[i+1][1][0] + ' ' + result[i][1][0][result[i][1][0].length-1] + (result[i][1][0][result[i][1][0].length-1] != result[i + 1][1][0][0])+ result[i + 1][1][0][0])
+                     
+                    if (result[i][1][0][result[i][1][0].length - 1] != result[i + 1][1][0][0]) {
+                        ret.push(result[i + 1][1])
+                    }        
+                         
+                } else if (result[i+1][1][0].includes(result[i+1][1][0]) & (result[i+1][1][0].length-1)) {
+                             //  console.log(result[i][1][0], result[i + 1][1][0])
+                    ret.push(result[i+2][1])
+                     //  console.log(result[i + 1][1][0],result[i + 2][1][0])    
+                           }
+                
                 
 
             }
-            console.log(ret)
+          //                 console.log(ret)
         }
         
         catch (err) {
@@ -166,4 +172,4 @@ const csvRead = (csv) => {
         return csvs
 }
 const pos = new Pos()
-pos.tag('새로운 감정 생성 눈물이 흘러도 피가 나도 어쩔 수 없잖아')
+pos.tag('넌 모르는 거야그날의 너의 뒷모습을 웃으며 다시 보자는 그 마지막 말에 섞여 있던 크고 빨간 상처자국을 아무 의미 없는 거야 남은 건 작은 기억 하나 언젠가 우주선 수리가 끝나던 날에 손을 흔들며 웃어 보인 너의 모습')
