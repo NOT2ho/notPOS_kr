@@ -1,0 +1,2 @@
+dic.csv는 mecab_ko_dic을 변형한 것입니다.
+https://bitbucket.org/eunjeon/mecab-ko-dic/src/master/

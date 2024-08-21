@@ -1,8 +1,15 @@
 {
+  "type": "module",
   "name": "notpos_kr",
-  "version": "1.0.0",
-  "description": "not pos tagger",
+  "version": "1.0.9",
+  "description": "korean POS tagger",
   "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./src/index.js",
+      "require": "./src/index.cjs"
+    }
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -11,10 +18,9 @@
     "url": "git+https://github.com/NOT2ho/notPOS_kr.git"
   },
   "keywords": [
+    "POS",
     "nlp",
-    "korean",
-    "pos",
-    "tagger"
+    "korean"
   ],
   "author": "not2ho",
   "license": "ISC",
@@ -22,5 +28,8 @@
     "url": "https://github.com/NOT2ho/notPOS_kr/issues"
   },
   "homepage": "https://github.com/NOT2ho/notPOS_kr#readme",
-  "type": "module"
+  "devDependencies": {
+    "@types/node": "^22.4.2",
+    "typescript": "^5.5.4"
+  }
 }
