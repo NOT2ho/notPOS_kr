@@ -134,18 +134,33 @@ class Pos {
                     }
             
 
-            //console.log(result)
+       //   console.log(result)
             let idx = 0
             let key = 0
             let ret = {}
-            for (let i in Object.keys(res))
-            {   key = Number(Object.keys(res)[i])
-                ret[idx] = result[idx]
-                Number(idx) +=key
-                console.log(key)
+            let keys = Object.keys(result)
+           while (idx < Object.keys(result).length)
+           {
+               key = Number(keys[idx])
+               if (!result[idx]) {
+                     if (text[idx] != ' '){
+                    ret[idx] =[text[idx], 'UNK']
+                    idx++
+                       console.log(text[idx + 1], idx, key)
+                   }
+                   else idx++
+                    
+                } 
+                  {
+                    //key += result[key][0]
+                   ret[idx] = result[idx][0];
+                   console.log(key, idx, result[key][0])
+                     idx += result[idx][0][0].length
+                }
+                
                     }
                 
-  console.log(ret)
+console.log(ret)
             }
                     
     
@@ -163,4 +178,4 @@ const csvRead = (csv) => {
         return csvs
 }
 const pos = new Pos()
-pos.tag('넌 모르는 거야그날의 너의 뒷모습을 웃으며 다시 보자는 그 마지막 말에 섞여 있던 크고 빨간 상처자국을 아무 의미 없는 거야 남은 건 작은 기억 하나 언젠가 우주선 수리가 끝나던 날에 손을 흔들며 웃어 보인 너의 모습')
+pos.tag('깔끔히 도려내진 기억들은 이제 되돌릴 수는 없는 것이겠지요 잊혀진 채로 사라져 간 누군가의 소리는 흩어져 사라져 가겠죠 날카로운 식물에 베여 찢어진 마음에서 액체들이 뚝뚝 흘러도 아무것도 할 수 없었던 우리는 무얼 잃었고 무얼 잊고 있나요-멀리 보이는 고가도로 아래 환하게 피어난 말미잘마저도 이제 나와는 아무런 상관도 아무런 관계도 없는 것이겠지요 처음부터 없었던 것처럼이라는 말조차 잊어버려 저녁 하늘의 푸름에 취해서 나아가는 방법을 잊어버렸겠지요 더는 무엇도 잃고 싶지 않아 모든 것을 모두를 놓아 버렸겠지요 내일 또 보자라는 인사도 약속도 사라져 버린 그런 세상이지만 나는 언젠가 또다시 같은 길을 찾아서 반복하고 순환하겠지요')
