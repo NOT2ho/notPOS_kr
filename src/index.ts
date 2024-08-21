@@ -1,21 +1,19 @@
 import fs from 'fs'
 import path from 'path';
-const __dirname = path.resolve();
+
 
 class Node {
-    child: object;
-    output: any[]
+    child: Map<string, Node>;
+    output: string[][]
     fail: null | Node
     end : boolean
-
     
-constructor() {
-    this.child = {};
-    this.output = []
-    this.fail = null
-    this.end = false
-}
-
+    constructor() {
+        this.child = new Map()
+        this.output = []
+        this.fail = null
+        this.end = false
+    }
 }
 
 class AhoCorasick {
@@ -24,16 +22,14 @@ class AhoCorasick {
         this.root = new Node();
     }
 
-    insert(words: any) {
-
+    insert(words: string[]) {
         let output = words
         let word = words[0]
         let node = this.root;
-        for (let i in word) {
-            const char = word[i];
-            if (!node.child[char])
-                node.child[char] = new Node();
-            node = node.child[char];
+        for (const char of word) {
+            if (!node.child.get(char))
+                node.child.set(char, new Node());
+            node = node.child.get(char) || this.root;
         }
         node.output.push(output);
         node.end = true
@@ -42,150 +38,117 @@ class AhoCorasick {
 
     fail() {
         const que : Node[] = []
-        for (const i in this.root.child) {
-            this.root.child[i].fail = this.root;
-              que.push(this.root.child[i]);
+        for (const [i, c] of this.root.child.entries()) {
+            c.fail = this.root;
+            que.push(c);
           
             while (que.length > 0) {
-                 const currentNode = que.shift();
-                
-            
-            
-                for (const i in currentNode.child) {
-                    const nextNode = currentNode.child[i]
+                const currentNode = que.shift();
+                if (typeof currentNode === undefined)
+                    break;
+                            
+                for (const i in currentNode?.child) {
+                    const nextNode = currentNode?.child.get(i);
 
                     if (nextNode == null)
-                        continue
+                        continue;
                 
                     que.push(nextNode);
 
                     let failNode = currentNode.fail;
 
-                    while (failNode !== null && !failNode.child[i]) {
+                    while (failNode !== null && !failNode.child.get(i)) {
                         failNode = failNode.fail;
                     }
                 
                     if (currentNode != this.root)
+                        nextNode.fail = failNode ? failNode.child.get(i) || this.root : this.root;
 
-                
-                    nextNode.fail = failNode ? failNode.child[i] || this.root : this.root;
-                    nextNode.output = nextNode.output.concat(nextNode.fail.output);
-                
+                    if (nextNode.fail !== null)
+                        nextNode.output = nextNode.output.concat(nextNode.fail.output);
                 }
         
-        
-            }}
-
+            }
         }
-    search(input) {
-        this.fail()
-        let text = input
-        let result = {}
-        let currentNode = this.root;
-        for (let i in text) {
-            
+    }
+
+    search(input: string) : Map<number, string[][]> {
+        this.fail();
+        let text = input;
+        let result : Map<number, string[][]> = new Map();
+        let currentNode : Node | null = this.root;
+        for (let i = 0; i < text.length; i++) {
             const char = text[i];
-            while (currentNode !== null && !currentNode.child[char]) {
-              
+
+            while (currentNode !== null && !currentNode.child.get(char)) {
                 currentNode = currentNode.fail;
             }
     
-            currentNode = currentNode ? currentNode.child[char] || this.root : this.root;
-       
+            currentNode = currentNode ? currentNode.child.get(char) || this.root : this.root;
         
             for (const output of currentNode.output) {
-                
-                    result[i - output[0].length + 1] =[]
-             result[i - output[0].length + 1].push(output)
-      
-                  
-                
-            }
-            
+                let resultArray = result.get(i - output[0].length + 1) || [];
+                resultArray.push(output);
+                result.set(i - output[0].length + 1, resultArray);
+            }   
         }
-                
-            return result
-        
-        
+        return result;
     }
-        
-    
+
 }
 
 class Pos {
-    
-    preprocess = (text) => {
+    preprocess = (text: string) => {
         const str = text.replace(/([^가-힣a-zA-Z]*)/, " ")
         const undefArr = str.split(' ')
         const arr = undefArr.splice(1, undefArr.length)
-        return arr
-        
+        return arr.toString();
     }
 
-    tag = (text) => {
-       
-        const ac = new AhoCorasick()
-        let res = {}
+    tag = (text: string) => {
+        const ac = new AhoCorasick();
+        let res : Map<number, string[][]> = new Map();
         try {
-            const data = fs.readFileSync(__dirname + '/node_modules/notpos_kr/dic/dic.csv')
-            const pd = data.toString().split('\n')
+            const data = fs.readFileSync(path.join(process.cwd(), '/node_modules/notpos_kr/dic/dic.csv'))
+            const pd = data.toString().split('\n');
 
-            for (let i in pd) {
-
-                let word = pd[i].slice(0, -1).split(',')
-                
-                
-                ac.insert(word)
+            for (let i of pd) {
+                let word = i.slice(0, -1).split(',');
+                ac.insert(word);
             }
-            res = ac.search(text)
-            let result = {}
-            
-            for (let i of Object.keys(res)) {
-                result[i] = []
-                        result[i].push(res[i][res[i].length-1])
-                    }
-            
+            res = ac.search(text);
 
+            const result : Map<number, string[]> = new Map();
+            for (let [i, x] of res.entries()) {
+                const resultArray = x[x.length - 1] || [];
+                result.set(i, resultArray);
+            }
        
             let idx = 0
             let key = 0
-            let ret = {}
-            let keys = Object.keys(result)
-          for (let i in text)
-           {
-               key = Number(keys[idx])
-               if (!result[idx]) {
-                     if (text[idx] != ' '){
-                    ret[idx] =[text[idx], 'UNK']
-                    idx++
-                   }
-                   else idx++
-                    
-                } else 
-                  {
-                    
-                   ret[idx] = result[idx][0];
-                     idx += result[idx][0][0].length
-                }
-                
+            let ret : Map<number, string[]> = new Map();
+            let keys = Array.from(result.keys());
+            for (let s of text)
+            {
+                if (idx >= text.length) break;
+                key = keys[idx];
+                const resv = result.get(idx) || []
+                if (resv.length == 0) {
+                    if (text[idx] != ' ') {
+                        ret.set(idx, [text[idx], 'UNK']);
                     }
-                
-            let out = []
-            for (let i of Object.values(ret))
-                if (i[0])
-                out.push(i)
-            return  out
+                    idx++;
+                } else {
+                    ret.set(idx, resv);
+                    idx += resv[0].length;
+                }
             }
-                    
-    
-        
-        catch (err) {
-            console.error(err)
+                
+            return ret;
+        } catch (err) {
+            console.error(err);
         }
     }
- 
-
 }
-
 
 export {Pos}

@@ -1,5 +1,6 @@
-const fs = require('fs')
-
+import fs from 'fs'
+import path from 'path';
+const __dirname = path.resolve();
 
 class Node {
 constructor() {
@@ -116,7 +117,7 @@ class Pos {
         const ac = new AhoCorasick()
         let res = {}
         try {
-            const data = fs.readFileSync(__dirname + '/node_modules/notpos_kr/dic/dic.csv')
+            const data = fs.readFileSync(path.join(process.cwd(), '/node_modules/notpos_kr/dic/dic.csv'))
             const pd = data.toString().split('\n')
 
             for (let i in pd) {
@@ -176,4 +177,5 @@ class Pos {
 
 }
 
-module.exports = Pos
+
+export {Pos}
