@@ -127,37 +127,28 @@ class Pos {
             }
             res = ac.search(text)
             let result = {}
-            let idx = 0
-            for (let i of Object.keys(res)) 
+            
+            for (let i of Object.keys(res)) {
+                result[i] = []
                         result[i].push(res[i][res[i].length-1])
-                    
+                    }
             
 
-           console.log(result)
-            result.push(res[res.length - 1])
-            let ret = []
-            const set = new Set()
-            ret.push(result[0][1])
-            for (let i = 0; i < result.length - 2; i++) {
-                //    console.log(result[i + 1][1][0], result[i + 2][1][0])
-                if (result[i][1][0][result[i][1][0].length - 1] != result[i + 1][1][0][0]) {
-                    //   console.log(result[i+1][1][0] + ' ' + result[i][1][0][result[i][1][0].length-1] + (result[i][1][0][result[i][1][0].length-1] != result[i + 1][1][0][0])+ result[i + 1][1][0][0])
-                     
-                    if (result[i][1][0][result[i][1][0].length - 1] != result[i + 1][1][0][0]) {
-                        ret.push(result[i + 1][1])
-                    }        
-                         
-                } else if (result[i+1][1][0].includes(result[i+1][1][0]) & (result[i+1][1][0].length-1)) {
-                             //  console.log(result[i][1][0], result[i + 1][1][0])
-                    ret.push(result[i+2][1])
-                     //  console.log(result[i + 1][1][0],result[i + 2][1][0])    
-                           }
+            //console.log(result)
+            let idx = 0
+            let key = 0
+            let ret = {}
+            for (let i in Object.keys(res))
+            {   key = Number(Object.keys(res)[i])
+                ret[idx] = result[idx]
+                Number(idx) +=key
+                console.log(key)
+                    }
                 
-                
-
+  console.log(ret)
             }
-          //                 console.log(ret)
-        }
+                    
+    
         
         catch (err) {
             console.error(err)
