@@ -1,3 +1,5 @@
+## [npm-notpos_kr](https://www.npmjs.com/package/notpos_kr)
+
 npm에 한국어 형태소 분석기가 없어서 만들었습니다.
 형태소 태그는 부정확합니다.
 dic 경로 문제를 해결하였으나 문제가 생긴다면 github으로 알려 주세요
