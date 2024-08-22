@@ -1,6 +1,5 @@
 import fs from 'fs'
 import path from 'path';
-const __dirname = path.resolve();
 
 class Node {
 constructor() {
@@ -117,7 +116,16 @@ class Pos {
         const ac = new AhoCorasick()
         let res = {}
         try {
-            const data = fs.readFileSync(path.join(process.cwd(), '/node_modules/notpos_kr/dic/dic.csv'))
+            const notpos = new RegExp(/^(?:.*[\\\/])?notpos_kr(?:[\\\/]*)$/g);
+       
+            
+            const rec = (filepath) => {
+                if (notpos.test(filepath))
+                    return (path.join(filepath, 'dic/dic.csv'))
+                return rec(path.join(filepath, '..'))
+            }
+            
+            const data = fs.readFileSync(rec(__dirname))
             const pd = data.toString().split('\n')
 
             for (let i in pd) {
@@ -163,19 +171,20 @@ class Pos {
             let out = []
             for (let i of Object.values(ret))
                 if (i[0])
-                out.push(i)
+                    out.push(i)
+            console.log(out)
             return  out
             }
                     
-    
+
         
         catch (err) {
             console.error(err)
         }
     }
- 
 
 }
-
+let pos = new Pos()
+pos.tag()
 
 export {Pos}

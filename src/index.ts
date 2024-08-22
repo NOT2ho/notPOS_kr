@@ -109,7 +109,16 @@ class Pos {
         const ac = new AhoCorasick();
         let res : Map<number, string[][]> = new Map();
         try {
-            const data = fs.readFileSync(path.join(process.cwd(), '/node_modules/notpos_kr/dic/dic.csv'))
+            const notpos = new RegExp(/^(?:.*[\\\/])?notpos_kr(?:[\\\/]*)$/);
+       
+            
+            const rec = (filepath: string) => {
+                if (notpos.test(filepath) || filepath == process.cwd())
+                     return (path.join(filepath, 'dic/dic.csv'))
+                return rec(path.join(filepath, '..'))
+            }
+            
+            const data = fs.readFileSync(rec(__dirname))
             const pd = data.toString().split('\n');
 
             for (let i of pd) {
@@ -144,7 +153,7 @@ class Pos {
                 }
             }
                 
-            return ret;
+            return Array.from(ret.values());
         } catch (err) {
             console.error(err);
         }

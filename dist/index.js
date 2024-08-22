@@ -1,5 +1,8 @@
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 class Node {
   constructor() {
     this.child = /* @__PURE__ */ new Map();
@@ -82,7 +85,13 @@ class Pos {
       const ac = new AhoCorasick();
       let res = /* @__PURE__ */ new Map();
       try {
-        const data = fs.readFileSync(path.join(process.cwd(), "/node_modules/notpos_kr/dic/dic.csv"));
+        const notpos = new RegExp(/^(?:.*[\\\/])?notpos_kr(?:[\\\/]*)$/);
+        const rec = (filepath) => {
+          if (notpos.test(filepath) || filepath == process.cwd())
+            return path.join(filepath, "dic/dic.csv");
+          return rec(path.join(filepath, ".."));
+        };
+        const data = fs.readFileSync(rec(__dirname));
         const pd = data.toString().split("\n");
         for (let i of pd) {
           let word = i.slice(0, -1).split(",");
@@ -112,7 +121,7 @@ class Pos {
             idx += resv[0].length;
           }
         }
-        return ret;
+        return Array.from(ret.values());
       } catch (err) {
         console.error(err);
       }

@@ -1,10 +1,9 @@
 {
   "type": "module",
   "name": "notpos_kr",
-  "version": "1.1.1",
+  "version": "1.2.8",
   "description": "korean POS tagger",
   "main": "index.js",
-
   "exports": {
     "types": "./dist/index.d.ts",
     "import": "./dist/index.js",
@@ -14,8 +13,7 @@
     "dist",
     "src",
     "dic"
-  ]
-,
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -35,7 +33,7 @@
   },
   "homepage": "https://github.com/NOT2ho/notPOS_kr#readme",
   "devDependencies": {
-    "@types/node": "^22.4.2",
+    "@types/node": "20.0.0",
     "tsx": "^4.17.0",
     "typescript": "^5.5.4"
   }

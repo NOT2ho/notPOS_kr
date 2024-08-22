@@ -115,7 +115,13 @@ class Pos {
       const ac = new AhoCorasick();
       let res = /* @__PURE__ */ new Map();
       try {
-        const data = import_fs.default.readFileSync(import_path.default.join(process.cwd(), "/node_modules/notpos_kr/dic/dic.csv"));
+        const notpos = new RegExp(/^(?:.*[\\\/])?notpos_kr(?:[\\\/]*)$/);
+        const rec = (filepath) => {
+          if (notpos.test(filepath) || filepath == process.cwd())
+            return import_path.default.join(filepath, "dic/dic.csv");
+          return rec(import_path.default.join(filepath, ".."));
+        };
+        const data = import_fs.default.readFileSync(rec(__dirname));
         const pd = data.toString().split("\n");
         for (let i of pd) {
           let word = i.slice(0, -1).split(",");
@@ -145,7 +151,7 @@ class Pos {
             idx += resv[0].length;
           }
         }
-        return ret;
+        return Array.from(ret.values());
       } catch (err) {
         console.error(err);
       }

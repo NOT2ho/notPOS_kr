@@ -1,5 +1,5 @@
 declare class Pos {
     preprocess: (text: string) => string;
-    tag: (text: string) => Map<number, string[]> | undefined;
+    tag: (text: string) => string[][] | undefined;
 }
 export { Pos };
