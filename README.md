@@ -1,6 +1,7 @@
+## [npm-notpos_kr](https://www.npmjs.com/package/notpos_kr)
 npm에 한국어 형태소 분석기가 없어서 만들었습니다.
 형태소 태그는 부정확합니다.
-typescript 지원은 곧 할 예정입니다.
+
 
 입력
 
